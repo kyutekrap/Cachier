@@ -1,0 +1,17 @@
+# Exclude all tests and src files
+src/
+src/example
+*.spec.js
+*.test.js
+*.html
+
+# Exclude config files
+tsconfig.json
+tsconfig.app.json
+tsconfig.node.json
+package-lock.json
+eslint.config.js
+vite.config.ts
+
+# Exclude local env files
+.env

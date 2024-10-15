@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 class IndexedDBUtility {
     private db: IDBDatabase | null = null;
 
@@ -12,9 +9,7 @@ class IndexedDBUtility {
 
     private async openDatabase(store: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            const host = process.env.DB_HOST ?? "test";
-            if (host === "test") console.log("Create an environment variable 'DB_HOST'.");
-            const request = window.indexedDB.open(host, 1);
+            const request = window.indexedDB.open("Cachier", 1);
 
             request.onerror = (event) => {
                 console.log("Your browser doesn't support a stable version of IndexedDB.");

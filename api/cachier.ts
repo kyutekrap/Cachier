@@ -8,7 +8,7 @@ function Cachier(type: CachierType) {
     };
 }
 
-function getter(target: any, _propertyKey: string, descriptor: PropertyDescriptor): any {
+function getter(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
         let result = originalMethod.apply(this, args);
@@ -16,15 +16,17 @@ function getter(target: any, _propertyKey: string, descriptor: PropertyDescripto
             const cachier = this.constructor.prototype.__cachier__;
             switch (cachier) {
                 case "session":
-                    result = sessionStorage.getItem(target as string);
+                    result = sessionStorage.getItem(target.constructor.name);
+                    if (result) result = JSON.parse(result);
                     break;
                 case "local":
                     if (typeof window !== 'undefined')
-                    result = localStorage.getItem(target as string);
+                        result = localStorage.getItem(target.constructor.name);
+                    if (result) result = JSON.parse(result);
                     break;
                 case "indexedDB":
                     const db = new IndexedDBUtility();
-                    db.getAll(target as string).then(response => result = response );
+                    db.getAll(target.constructor.name).then(response => result = response);
                     break;
                 default:
                     break;
@@ -40,16 +42,16 @@ function setter(target: any, _propertyKey: string, descriptor: PropertyDescripto
         const cachier = this.constructor.prototype.__cachier__;
         switch (cachier) {
             case "session":
-                sessionStorage.setItem(target as string, JSON.stringify(args));
+                sessionStorage.setItem(target.constructor.name, JSON.stringify(args));
                 break;
             case "local":
                 if (typeof window !== 'undefined')
-                localStorage.setItem(target as string, JSON.stringify(args));
+                    localStorage.setItem(target.constructor.name, JSON.stringify(args));
                 break;
             case "indexedDB":
                 const db = new IndexedDBUtility();
-                db.clearStore(target as string).then(_ => {
-                    db.addData(target as string, args).then(_ => {
+                db.clearStore(target.constructor.name).then(() => {
+                    db.addData(target.constructor.name, args).then(() => {
                         return;
                     });
                 });
@@ -67,15 +69,15 @@ function collector(target: any, _propertyKey: string, descriptor: PropertyDescri
         const cachier: CachierType = this.constructor.prototype.__cachier__;
         switch (cachier) {
             case "session":
-                sessionStorage.removeItem(target as string);
+                sessionStorage.removeItem(target.constructor.name);
                 break;
             case "local":
                 if (typeof window !== 'undefined')
-                localStorage.removeItem(target as string);
+                    localStorage.removeItem(target.constructor.name);
                 break;
             case "indexedDB":
                 const db = new IndexedDBUtility();
-                db.clearStore(target as string).then(_ => {
+                db.clearStore(target.constructor.name).then(() => {
                     return;
                 });
                 break;
