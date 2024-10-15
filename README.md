@@ -1,6 +1,11 @@
 # Cachier
 Model based globals manager for modern javascript.
 
+***
+> Run with <br/>
+> <b>npm install cachier-api</b>
+***
+
 #### Cachier Targets:
 * Session
 * Local Storage
