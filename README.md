@@ -15,3 +15,4 @@ Model based globals manager for modern javascript.
 * getter
 * setter
 * collector
+* finder

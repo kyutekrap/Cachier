@@ -1,22 +1,27 @@
-import { Cachier, getter, setter, collector } from 'cachier-api';
+import { Cachier, getter, setter, collector, finder } from '../../../api/cachier';
 
-interface UserModel {
+export interface User {
     email: string;
     phone: string;
 }
 
 @Cachier("session")
-class GlobalUser {
+export class GlobalUser {
 
-    private static data: UserModel | undefined;
+    private static data: User | undefined;
+
+    @finder
+    static find(key: keyof User): string | undefined {
+        return GlobalUser.data?.[key];
+    }
     
     @getter
-    static get(): UserModel | undefined {
+    static get(): User | undefined {
         return GlobalUser.data;
     }
 
     @setter
-    static set(data: UserModel): void {
+    static set(data: User): void {
         GlobalUser.data = data;
     }
 
@@ -26,4 +31,4 @@ class GlobalUser {
     }
 }
 
-export default GlobalUser;
+export default GlobalUser
