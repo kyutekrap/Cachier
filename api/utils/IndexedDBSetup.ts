@@ -1,6 +1,6 @@
-import { IndexedDbConfig } from "./IndexedDBConfig";
+import { IndexedDBConfig } from "./IndexedDBConfig";
 
-export const IndexedDBSetup = (config: IndexedDbConfig): Promise<IDBDatabase> => {
+export const IndexedDBSetup = (config: IndexedDBConfig): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(config.dbName, config.version);
     

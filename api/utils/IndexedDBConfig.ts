@@ -1,4 +1,4 @@
-export interface StoreConfig {
+interface StoreConfig {
     name: string;
     keyPath: string;
     autoIncrement?: boolean;
@@ -9,7 +9,7 @@ export interface StoreConfig {
     }[];
 }
 
-export interface IndexedDbConfig {
+export interface IndexedDBConfig {
     dbName: string;
     version: number;
     stores: StoreConfig[];

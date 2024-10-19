@@ -1,4 +1,4 @@
-import { Cachier, getter, setter, collector, finder } from '../../../api/cachier';
+import { Cachier, getter, setter, collector, finder } from 'cachier-api';
 
 export interface User {
     email: string;

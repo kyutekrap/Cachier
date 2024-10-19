@@ -1,6 +1,6 @@
 {
   "name": "cachier-api",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Model based globals manager",
   "main": "./index.ts",
   "repository": {
@@ -14,7 +14,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "cachier-api": "^0.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

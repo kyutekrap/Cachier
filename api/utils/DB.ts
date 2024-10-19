@@ -1,4 +1,4 @@
-import { IndexedDbConfig } from './IndexedDBConfig';
+import { IndexedDBConfig } from './IndexedDBConfig';
 import { IndexedDBSetup } from './IndexedDBSetup';
 
 export class GlobalDB {
@@ -9,7 +9,7 @@ export class GlobalDB {
         return GlobalDB.data;
     }
 
-    static set(data: IndexedDbConfig): void {
+    static set(data: IndexedDBConfig): void {
         IndexedDBSetup(data).then(response => GlobalDB.data = response);
     }
 }

@@ -1,5 +1,6 @@
-# Exclude src
+# Exclude all tests and src files
 src/
+*.html
 
 # Exclude config files
 tsconfig.json
@@ -8,3 +9,4 @@ tsconfig.node.json
 package-lock.json
 eslint.config.js
 vite.config.ts
+.cachier.config.ts
