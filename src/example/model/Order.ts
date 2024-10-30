@@ -1,4 +1,4 @@
-import { getter, setter, collector, finder, IndexedDB } from '../../../api';
+import { getter, setter, collector, finder, IndexedDB } from 'cachier-api';
 
 export interface Order {
     orderId: string;
