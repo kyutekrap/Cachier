@@ -1,12 +1,11 @@
-import { Cachier, getter, setter, collector, finder } from 'cachier-api';
+import { getter, setter, collector, finder, SessionBank } from '../../../api';
 
 export interface User {
     email: string;
     phone: string;
 }
 
-@Cachier("session")
-export class GlobalUser {
+export class GlobalUser extends SessionBank {
 
     private static data: User | undefined;
 

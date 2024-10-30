@@ -1,11 +1,11 @@
-import { IndexedDBConfig, GlobalDB } from "cachier-api";
+import { IndexedDBConfig, GlobalDB } from './api';
 
 const dbConfig: IndexedDBConfig = {
     dbName: 'MyAppDatabase',
     version: 1,
     stores: [
         {
-            name: 'Users',
+            name: '_Users',
             keyPath: 'id',
             autoIncrement: true,
             indices: [
@@ -13,7 +13,7 @@ const dbConfig: IndexedDBConfig = {
             ]
         },
         {
-            name: 'Orders',
+            name: '_Orders',
             keyPath: 'orderId',
             autoIncrement: false
         }

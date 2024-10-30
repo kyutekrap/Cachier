@@ -2,15 +2,9 @@ import IndexedDBUtility from './utils/IndexedDBUtility';
 
 type CachierType = "session" | "local" | "indexedDB";
 
-function Cachier(type: CachierType) {
-    return function (constructor: Function) {
-        constructor.prototype.__cachier__ = type;
-    };
-}
-
 function finder(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
     const originalMethod = descriptor.value;
-    const cachier = target.prototype.__cachier__;
+    const cachier: CachierType = target.__cachier__;
     switch(cachier) {
         case "session":
             descriptor.value = function (...args: any[]) {
@@ -59,7 +53,7 @@ function finder(target: any, _propertyKey: string, descriptor: PropertyDescripto
 
 function getter(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
     const originalMethod = descriptor.value;
-    const cachier = target.prototype.__cachier__;
+    const cachier: CachierType = target.__cachier__;
     switch(cachier) {
         case "session": 
             descriptor.value = function (...args: any[]) {
@@ -103,7 +97,7 @@ function getter(target: any, _propertyKey: string, descriptor: PropertyDescripto
 function setter(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
-        const cachier = target.prototype.__cachier__;
+        const cachier: CachierType = target.__cachier__;
         switch (cachier) {
             case "session":
                 sessionStorage.setItem(target.name, JSON.stringify(args?.[0]));
@@ -130,7 +124,7 @@ function setter(target: any, _propertyKey: string, descriptor: PropertyDescripto
 function collector(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
-        const cachier = target.prototype.__cachier__;
+        const cachier: CachierType = target.__cachier__;
         switch (cachier) {
             case "session":
                 sessionStorage.removeItem(target.name);
@@ -153,7 +147,6 @@ function collector(target: any, _propertyKey: string, descriptor: PropertyDescri
 }
 
 export {
-    Cachier,
     finder,
     getter,
     setter,

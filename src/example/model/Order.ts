@@ -1,12 +1,11 @@
-import { Cachier, getter, setter, collector, finder } from 'cachier-api';
+import { getter, setter, collector, finder, IndexedDB } from '../../../api';
 
 export interface Order {
     orderId: string;
     name: string;
 }
 
-@Cachier("indexedDB")
-export class Orders {
+export class Orders extends IndexedDB {
 
     private static data: Order[] | undefined;
     
