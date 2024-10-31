@@ -16,7 +16,7 @@ const UserTest = () => {
 
     const handleGetUser = () => {
         const data = GlobalUser.get();
-        console.log(data)
+        console.log(data);
         setUserData(data);
     };
 
@@ -33,6 +33,8 @@ const UserTest = () => {
     const handleClearUser = () => {
         GlobalUser.clear();
         setUserData(undefined);
+        setEmail(undefined); // Clear the email state
+        setPhone(undefined); // Clear the phone state
     };
 
     return (

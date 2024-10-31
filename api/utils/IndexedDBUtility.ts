@@ -110,6 +110,31 @@ class IndexedDBUtility {
             }
         });
     }
+
+    public async deleteItem(store: string, key: string | number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                const transaction = this.db.transaction(store, "readwrite");
+                const objectStore = transaction.objectStore(store);
+                const request = objectStore.delete(key);
+
+                request.onsuccess = () => {
+                    if (request.result) {
+                        resolve(request.result);
+                    } else {
+                        resolve(null);
+                    }
+                };
+
+                request.onerror = (event) => {
+                    console.error("Error retrieving data by key:", event);
+                    reject(event);
+                };
+            } else {
+                reject(new Error("Database not initialized"));
+            }
+        });
+    }
 }
 
 export default IndexedDBUtility;

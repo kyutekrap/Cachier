@@ -1,4 +1,4 @@
-import { getter, setter, collector, finder, SessionBank } from 'cachier-api';
+import { getter, setter, collector, finder, SessionBank } from '../../../api';
 
 export interface User {
     email: string;
@@ -6,7 +6,6 @@ export interface User {
 }
 
 export class GlobalUser extends SessionBank {
-
     private static data: User | undefined;
 
     @finder

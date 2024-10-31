@@ -3,8 +3,15 @@ import { Orders, Order } from '../model/Order';
 
 const OrderTest = () => {
     const [orders, setOrders] = useState<Order[]>([]);
-    const [orderId, setOrderId] = useState('');
+    
+    // Separate states for finding, adding, and removing orders
+    const [findOrderId, setFindOrderId] = useState('');
     const [foundOrder, setFoundOrder] = useState<Order | undefined>(undefined);
+    
+    const [addOrderId, setAddOrderId] = useState('');
+    const [addOrderName, setAddOrderName] = useState('');
+    
+    const [removeOrderId, setRemoveOrderId] = useState('');
 
     const sampleOrders = [
         { orderId: '1', name: 'Order 1' },
@@ -13,6 +20,7 @@ const OrderTest = () => {
 
     const handleSetOrders = () => {
         Orders.set(sampleOrders);
+        setOrders(sampleOrders);
     };
 
     const handleGetOrders = async () => {
@@ -21,7 +29,7 @@ const OrderTest = () => {
     };
 
     const handleFindOrder = async () => {
-        const result = await Orders.find(orderId);
+        const result = await Orders.find(findOrderId);
         setFoundOrder(result);
     };
 
@@ -31,11 +39,27 @@ const OrderTest = () => {
         setFoundOrder(undefined);
     };
 
+    const handleAddOrder = () => {
+        if (addOrderId && addOrderName) {
+            const newOrder: Order = { orderId: addOrderId, name: addOrderName };
+            Orders.add(newOrder);
+            setOrders(prevOrders => [...(prevOrders || []), newOrder]);
+            setAddOrderId('');
+            setAddOrderName('');
+        }
+    };
+
+    const handleRemoveOrder = () => {
+        Orders.remove(removeOrderId);
+        setOrders(prevOrders => prevOrders.filter(order => order.orderId !== removeOrderId));
+        setRemoveOrderId('');
+    };
+
     return (
         <div>
             <h1>Orders Test</h1>
 
-            <button onClick={handleSetOrders}>Set Orders</button>
+            <button onClick={handleSetOrders}>Set Sample Orders</button>
             <button onClick={handleGetOrders}>Get Orders</button>
 
             <h2>Orders:</h2>
@@ -47,12 +71,14 @@ const OrderTest = () => {
                 ))}
             </ul>
 
+            {/* Find Order Section */}
             <div>
+                <h3>Find Order</h3>
                 <input
                     type="text"
-                    value={orderId}
-                    onChange={(e) => setOrderId(e.target.value)}
-                    placeholder="Enter Order ID"
+                    value={findOrderId}
+                    onChange={(e) => setFindOrderId(e.target.value)}
+                    placeholder="Enter Order ID to Find"
                 />
                 <button onClick={handleFindOrder}>Find Order</button>
                 {foundOrder ? (
@@ -62,8 +88,38 @@ const OrderTest = () => {
                         <p>Name: {foundOrder.name}</p>
                     </div>
                 ) : (
-                    <p>No order found with ID: {orderId}</p>
+                    findOrderId && <p>No order found with ID: {findOrderId}</p>
                 )}
+            </div>
+
+            {/* Add Order Section */}
+            <div>
+                <h3>Add New Order</h3>
+                <input
+                    type="text"
+                    value={addOrderId}
+                    onChange={(e) => setAddOrderId(e.target.value)}
+                    placeholder="Order ID"
+                />
+                <input
+                    type="text"
+                    value={addOrderName}
+                    onChange={(e) => setAddOrderName(e.target.value)}
+                    placeholder="Order Name"
+                />
+                <button onClick={handleAddOrder}>Add Order</button>
+            </div>
+
+            {/* Remove Order Section */}
+            <div>
+                <h3>Remove Order</h3>
+                <input
+                    type="text"
+                    value={removeOrderId}
+                    onChange={(e) => setRemoveOrderId(e.target.value)}
+                    placeholder="Enter Order ID to Remove"
+                />
+                <button onClick={handleRemoveOrder}>Remove Order</button>
             </div>
 
             <button onClick={handleClearOrders}>Clear Orders</button>

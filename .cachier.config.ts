@@ -1,4 +1,4 @@
-import { IndexedDBConfig, GlobalDB } from 'cachier-api';
+import { IndexedDBConfig, GlobalDB } from './api';
 
 const dbConfig: IndexedDBConfig = {
     dbName: 'MyAppDatabase',

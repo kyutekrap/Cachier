@@ -1,4 +1,4 @@
-import { getter, setter, collector, finder, IndexedDB } from 'cachier-api';
+import { getter, setter, collector, finder, IndexedDB, adder, remover } from '../../../api';
 
 export interface Order {
     orderId: string;
@@ -6,7 +6,6 @@ export interface Order {
 }
 
 export class Orders extends IndexedDB {
-
     private static data: Order[] | undefined;
     
     @finder
@@ -27,6 +26,16 @@ export class Orders extends IndexedDB {
     @collector
     static clear(): void {
         Orders.data = undefined;
+    }
+
+    @adder
+    static add(order: Order): void {
+        if (Orders.data) Orders.data.push(order);
+    }
+
+    @remover
+    static remove(orderId: string): void {
+        if (Orders.data) Orders.data.filter(d => d.orderId !== orderId);
     }
 }
 
