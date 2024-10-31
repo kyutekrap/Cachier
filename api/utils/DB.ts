@@ -1,15 +1,51 @@
-import { IndexedDBConfig } from './IndexedDBConfig';
-import { IndexedDBSetup } from './IndexedDBSetup';
+import { StoreConfig } from "./IndexedDBConfig";
 
 export class GlobalDB {
 
     private static data: IDBDatabase | undefined;
     
-    static get(): IDBDatabase | undefined {
+    static async get(): Promise<IDBDatabase | undefined> {
+        if (GlobalDB.data) return GlobalDB.data;
+        await GlobalDB.set();
         return GlobalDB.data;
     }
 
-    static set(data: IndexedDBConfig): void {
-        IndexedDBSetup(data).then(response => GlobalDB.data = response);
-    }
+    static async set(): Promise<void> {
+        const currentUrl = new URL(import.meta.url);
+        const rootDir = currentUrl.origin;
+        const dbConfig = await import(/* @vite-ignore */`${rootDir}/cachier.config.mjs`).then(module => module.dbConfig);
+    
+        return new Promise<void>((resolve, reject) => {
+            const request = indexedDB.open(dbConfig.dbName);
+        
+            request.onupgradeneeded = () => {
+                const db = request.result;
+        
+                dbConfig.stores.forEach((storeConfig: StoreConfig) => {
+                    if (!db.objectStoreNames.contains(storeConfig.name)) {
+                            const store = db.createObjectStore(storeConfig.name, {
+                                keyPath: storeConfig.keyPath,
+                                autoIncrement: storeConfig.autoIncrement || false,
+                        });
+                        storeConfig.indices?.forEach((index) => {
+                            store.createIndex(index.name, index.keyPath, {
+                                unique: index.unique || false,
+                            });
+                        });
+                    }
+                });
+            };
+        
+            request.onsuccess = (event) => {
+                const dbRequest = event.target as IDBOpenDBRequest;
+                GlobalDB.data = dbRequest.result;
+                resolve();
+            };
+        
+            request.onerror = (event) => {
+                console.error('Error opening database:', (event.target as IDBOpenDBRequest).error);
+                reject((event.target as IDBOpenDBRequest).error);
+            };
+        });
+    }    
 }

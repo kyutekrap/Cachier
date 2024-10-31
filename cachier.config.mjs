@@ -1,6 +1,5 @@
-import { IndexedDBConfig, GlobalDB } from 'cachier-api';
-
-const dbConfig: IndexedDBConfig = {
+/** @type {import('cachier-api').IndexedDBConfig} */
+export const dbConfig = {
     dbName: 'MyAppDatabase',
     version: 1,
     stores: [
@@ -19,5 +18,3 @@ const dbConfig: IndexedDBConfig = {
         }
     ]
 };
-
-GlobalDB.set(dbConfig);

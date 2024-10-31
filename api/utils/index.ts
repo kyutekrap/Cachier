@@ -1,2 +1,1 @@
-export * from './DB';
-export * from './IndexedDBConfig';
+export type { IndexedDBConfig } from './IndexedDBConfig';

@@ -1,4 +1,4 @@
-interface StoreConfig {
+export interface StoreConfig {
     name: string;
     keyPath: string;
     autoIncrement?: boolean;
