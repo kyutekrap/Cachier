@@ -2,50 +2,54 @@ import IndexedDBUtility from "../utils/IndexedDBUtility";
 import { CachierType } from "../types";
 
 export function finder(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
-    const originalMethod = descriptor.value;
-    const cachier: CachierType = target.__cachier__;
-    switch(cachier) {
-        case "session":
-            descriptor.value = function (...args: any[]) {
-                let result = originalMethod.apply(this, args);
-                if (!result) {
-                    result = sessionStorage.getItem(target.name);
-                    if (result) {
-                        result = JSON.parse(result);
-                        result = args.reduce((accumulator: { [x: string]: any; }, key: string | number) => {
-                            return accumulator && accumulator[key];
-                        }, result);
+    try {
+        const originalMethod = descriptor.value;
+        const cachier: CachierType = target.__cachier__;
+        switch(cachier) {
+            case "session":
+                descriptor.value = function (...args: any[]) {
+                    let result = originalMethod.apply(this, args);
+                    if (!result) {
+                        result = sessionStorage.getItem(target.name);
+                        if (result) {
+                            result = JSON.parse(result);
+                            result = args.reduce((accumulator: { [x: string]: any; }, key: string | number) => {
+                                return accumulator && accumulator[key];
+                            }, result);
+                        }
                     }
+                    return result;
                 }
-                return result;
-            }
-            break;
-        case "local":
-            descriptor.value = function (...args: any[]) {
-                let result = originalMethod.apply(this, args);
-                if (!result) {
-                    result = localStorage.getItem(target.name);
-                    if (result) {
-                        result = JSON.parse(result);
-                        result = args.reduce((accumulator: { [x: string]: any; }, key: string | number) => {
-                            return accumulator && accumulator[key];
-                        }, result);
+                break;
+            case "local":
+                descriptor.value = function (...args: any[]) {
+                    let result = originalMethod.apply(this, args);
+                    if (!result) {
+                        result = localStorage.getItem(target.name);
+                        if (result) {
+                            result = JSON.parse(result);
+                            result = args.reduce((accumulator: { [x: string]: any; }, key: string | number) => {
+                                return accumulator && accumulator[key];
+                            }, result);
+                        }
                     }
+                    return result;
                 }
-                return result;
-            }
-            break;
-        case "indexedDB":
-            descriptor.value = async function (...args: any[]) {
-                let result = await originalMethod.apply(this, args);
-                if (!result) {
-                    const db = new IndexedDBUtility();
-                    result = db.get(target.name, args?.[0] ?? "").then(response => response);
+                break;
+            case "indexedDB":
+                descriptor.value = async function (...args: any[]) {
+                    let result = await originalMethod.apply(this, args);
+                    if (!result) {
+                        const db = new IndexedDBUtility();
+                        result = db.get(target.name, args?.[0] ?? "").then(response => response);
+                    }
+                    return result;
                 }
-                return result;
-            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+        }
+    } catch (e) {
+        console.error(e);
     }
 }

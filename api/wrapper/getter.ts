@@ -2,44 +2,48 @@ import IndexedDBUtility from "../utils/IndexedDBUtility";
 import { CachierType } from "../types";
 
 export function getter(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
-    const originalMethod = descriptor.value;
-    const cachier: CachierType = target.__cachier__;
-    switch(cachier) {
-        case "session": 
-            descriptor.value = function (...args: any[]) {
-                let result = originalMethod.apply(this, args);
-                if (!result) {
-                    result = sessionStorage.getItem(target.name);
-                    if (result) result = JSON.parse(result);
+    try {
+        const originalMethod = descriptor.value;
+        const cachier: CachierType = target.__cachier__;
+        switch(cachier) {
+            case "session": 
+                descriptor.value = function (...args: any[]) {
+                    let result = originalMethod.apply(this, args);
+                    if (!result) {
+                        result = sessionStorage.getItem(target.name);
+                        if (result) result = JSON.parse(result);
+                    }
+                    return result;
                 }
-                return result;
-            }
-            break;
-        case "local":
-            descriptor.value = function (...args: any[]) {
-                let result = originalMethod.apply(this, args);
-                if (!result) {
-                    result = localStorage.getItem(target.name);
-                    if (result) result = JSON.parse(result);
+                break;
+            case "local":
+                descriptor.value = function (...args: any[]) {
+                    let result = originalMethod.apply(this, args);
+                    if (!result) {
+                        result = localStorage.getItem(target.name);
+                        if (result) result = JSON.parse(result);
+                    }
+                    return result;
                 }
-                return result;
-            }
-            break;
-        case "indexedDB":
-            descriptor.value = async function (...args: any[]) {
-                let result = await originalMethod.apply(this, args);
-                if (!result) {
-                    const db = new IndexedDBUtility();
-                    result = db.getAll(target.name).then(response => response);
+                break;
+            case "indexedDB":
+                descriptor.value = async function (...args: any[]) {
+                    let result = await originalMethod.apply(this, args);
+                    if (!result) {
+                        const db = new IndexedDBUtility();
+                        result = db.getAll(target.name).then(response => response);
+                    }
+                    return result;
                 }
-                return result;
-            }
-            break;
-        default:
-            descriptor.value = function (...args: any[]) {
-                let result = originalMethod.apply(this, args);
-                return result;
-            }
-            break;
+                break;
+            default:
+                descriptor.value = function (...args: any[]) {
+                    let result = originalMethod.apply(this, args);
+                    return result;
+                }
+                break;
+        }
+    } catch (e) {
+        console.error(e);
     }
 }

@@ -21,7 +21,7 @@ class IndexedDBUtility {
                 const objectStore = transaction.objectStore(store);
 
                 data.forEach((value: any) => {
-                    const request = objectStore.add(value);
+                    const request = objectStore.put(value);
                     request.onerror = (event) => {
                         console.error("Error adding data:", event);
                         reject(event);
