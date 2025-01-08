@@ -1,32 +1,42 @@
 import IndexedDBUtility from "../utils/IndexedDBUtility";
 import { CachierType } from "../types";
+import { ConfigOptions } from "../utils/ConfigOptions";
+import { encrypt } from "../utils/encrypt";
 
 export function setter(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
-    try {
-        const originalMethod = descriptor.value;
-        descriptor.value = function (...args: any[]) {
-            const cachier: CachierType = target.__cachier__;
-            switch (cachier) {
-                case "session":
-                    sessionStorage.setItem(target.name, JSON.stringify(args?.[0]));
-                    break;
-                case "local":
-                    localStorage.setItem(target.name, JSON.stringify(args?.[0]));
-                    break;
-                case "indexedDB":
-                    const db = new IndexedDBUtility();
-                    db.clearStore(target.name).then(() => {
-                        db.addData(target.name, args?.[0]).then(() => {
-                            return;
-                        });
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+        const cachier: CachierType = target._cachier;
+        switch (cachier) {
+            case "session":
+                if (ConfigOptions._encrypt) {
+                    sessionStorage.setItem(encrypt(target._name), encrypt(JSON.stringify(args?.[0])));
+                } else {
+                    sessionStorage.setItem(target._name, JSON.stringify(args?.[0]));
+                }
+                break;
+            case "local":
+                if (ConfigOptions._encrypt) {
+                    localStorage.setItem(encrypt(target._name), encrypt(JSON.stringify(args?.[0])));
+                } else {
+                    localStorage.setItem(target._name, JSON.stringify(args?.[0]));
+                }
+                break;
+            case "indexedDB":
+                const db = new IndexedDBUtility();
+                if (ConfigOptions._encrypt) {
+                    db.clearStore(encrypt(target._name)).then(() => {
+                        db.addData(encrypt(target._name), args?.[0]);
                     });
-                    break;
-                default:
-                    break;
-            }
-            originalMethod.apply(this, args);
-        };
-    } catch (e) {
-        console.error(e);
-    }
+                } else {
+                    db.clearStore(target._name).then(() => {
+                        db.addData(target._name, args?.[0]);
+                    });
+                }
+                break;
+            default:
+                break;
+        }
+        originalMethod.apply(this, args);
+    };
 }

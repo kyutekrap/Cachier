@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { GlobalUser, User } from '../model/User';
+import GlobalToken from '../model/Token';
 
 const UserTest = () => {
-    const [email, setEmail] = useState<string | undefined>();
-    const [phone, setPhone] = useState<string | undefined>();
     const [userData, setUserData] = useState<User | undefined>();
 
     const handleSetUser = () => {
@@ -15,32 +14,38 @@ const UserTest = () => {
     };
 
     const handleGetUser = () => {
-        const data = GlobalUser.get();
-        console.log(data);
-        setUserData(data);
+        setUserData(GlobalUser.get());
     };
 
     const handleFindUserByEmail = () => {
-        const foundEmail = GlobalUser.find('email');
-        setEmail(foundEmail);
+        setUserData({phone: userData?.phone ?? "", email: GlobalUser.find('email') ?? ""});
     };
 
     const handleFindUserByPhone = () => {
-        const foundPhone = GlobalUser.find('phone');
-        setPhone(foundPhone);
+        setUserData({email: userData?.email ?? "", phone: GlobalUser.find('phone') ?? ""});
     };
 
     const handleClearUser = () => {
         GlobalUser.clear();
         setUserData(undefined);
-        setEmail(undefined); // Clear the email state
-        setPhone(undefined); // Clear the phone state
     };
+
+    const handleSetToken = () => {
+        GlobalToken.set("test");
+    }
+
+    const handleFetchUser = () => {
+        GlobalUser.fetch({"apiKey": "GlobalUser"}).then(result => {
+            if (result) setUserData(result);
+        });
+    }
 
     return (
         <div>
             <h1>User Test</h1>
 
+            <button onClick={handleSetToken}>Set Token</button>
+            <button onClick={() => handleFetchUser()}>Fetch User</button>
             <button onClick={handleSetUser}>Set User</button>
             <button onClick={handleGetUser}>Get User</button>
             <button onClick={handleFindUserByEmail}>Find Email</button>
@@ -57,8 +62,6 @@ const UserTest = () => {
                 ) : (
                     <p>No user data available.</p>
                 )}
-                {email && <p>Found Email: {email}</p>}
-                {phone && <p>Found Phone: {phone}</p>}
             </div>
         </div>
     );

@@ -1,41 +1,45 @@
-import { getter, setter, collector, finder, IndexedDB, adder, remover } from 'cachier-api';
+import { getter, setter, collector, finder, adder, remover } from '../../../api';
+import { CachierType } from '../../../api/types';
 
 export interface Order {
     orderId: string;
     name: string;
 }
 
-export class Orders extends IndexedDB {
-    private static data: Order[] | undefined;
+export class Orders {
+
+    static _cachier: CachierType = "indexedDB";
+    static _name: string = "Orders";
+    static _data: Order[] | undefined;
     
     @finder
     static async find(orderId: string): Promise<Order | undefined> {
-        return Orders.data?.find(d => d.orderId === orderId);
+        return Orders._data?.find(d => d.orderId === orderId);
     }
 
     @getter
     static async get(): Promise<Order[] | undefined> {
-        return Orders.data;
+        return Orders._data;
     }
 
     @setter
     static set(data: Order[]): void {
-        Orders.data = data;
+        Orders._data = data;
     }
 
     @collector
     static clear(): void {
-        Orders.data = undefined;
+        Orders._data = undefined;
     }
 
     @adder
     static add(order: Order): void {
-        if (Orders.data) Orders.data.push(order);
+        if (Orders._data) Orders._data.push(order);
     }
 
     @remover
     static remove(orderId: string): void {
-        if (Orders.data) Orders.data.filter(d => d.orderId !== orderId);
+        if (Orders._data) Orders._data.filter(d => d.orderId !== orderId);
     }
 }
 

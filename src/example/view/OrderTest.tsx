@@ -4,7 +4,6 @@ import { Orders, Order } from '../model/Order';
 const OrderTest = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     
-    // Separate states for finding, adding, and removing orders
     const [findOrderId, setFindOrderId] = useState('');
     const [foundOrder, setFoundOrder] = useState<Order | undefined>(undefined);
     
@@ -43,7 +42,6 @@ const OrderTest = () => {
         if (addOrderId && addOrderName) {
             const newOrder: Order = { orderId: addOrderId, name: addOrderName };
             Orders.add(newOrder);
-            setOrders(prevOrders => [...(prevOrders || []), newOrder]);
             setAddOrderId('');
             setAddOrderName('');
         }

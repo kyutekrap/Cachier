@@ -1,4 +1,6 @@
+import { ConfigOptions } from "./ConfigOptions";
 import { GlobalDB } from "./DB";
+import { encrypt } from "./encrypt";
 
 class IndexedDBUtility {
 
@@ -21,6 +23,17 @@ class IndexedDBUtility {
                 const objectStore = transaction.objectStore(store);
 
                 data.forEach((value: any) => {
+
+                    if (ConfigOptions._encrypt) {
+                        if (typeof value === 'object') {
+                            for (const [prop, propValue] of Object.entries(value)) {
+                                value[prop] = encrypt(propValue as string);
+                            }
+                        } else {
+                            value = encrypt(value);
+                        }
+                    }
+
                     const request = objectStore.put(value);
                     request.onerror = (event) => {
                         console.error("Error adding data:", event);
@@ -83,6 +96,33 @@ class IndexedDBUtility {
                 request.onerror = (event) => {
                     console.error("Error retrieving data by key:", event);
                     reject(event);
+                };
+            } else {
+                reject(new Error("Database not initialized"));
+            }
+        });
+    }
+
+    public async getLast(store: string): Promise<any> {
+        await this.promise;
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                const transaction = this.db.transaction(store, "readonly");
+                const objectStore = transaction.objectStore(store);
+                const request = objectStore.openCursor(null, 'prev');
+
+                request.onsuccess = (event: Event) => {
+                    const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+                    
+                    if (cursor) {
+                        resolve(cursor.value);
+                    } else {
+                        resolve(null);
+                    }
+                };
+    
+                request.onerror = () => {
+                    reject('Error reading from store');
                 };
             } else {
                 reject(new Error("Database not initialized"));
