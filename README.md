@@ -16,5 +16,6 @@ Model based globals manager for modern javascript.
 * setter
 * collector
 * finder
+* fetch
 * adder (Indexed DB only)
 * remover (Indexed DB only)
