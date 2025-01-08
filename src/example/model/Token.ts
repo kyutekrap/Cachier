@@ -1,5 +1,4 @@
-import { setter } from '../../../api';
-import { CachierType } from '../../../api/types';
+import { setter, CachierType } from 'cachier-api';
 
 export class GlobalToken {
 

@@ -1,4 +1,4 @@
-import createConfig from "./api/utils/createConfig";
+import { createConfig } from "cachier-api";
 import GlobalToken from "./src/example/model/Token";
 
 const config = createConfig({
