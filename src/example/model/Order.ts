@@ -1,4 +1,4 @@
-import { getter, setter, collector, finder, adder, remover, CachierType } from "../../../api";
+import { getter, setter, collector, finder, adder, remover, CachierType } from "cachier-api";
 
 export interface Order {
     orderId: string;

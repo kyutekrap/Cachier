@@ -1,6 +1,4 @@
-import { ConfigOptions } from "./ConfigOptions";
 import { GlobalDB } from "./DB";
-import { encrypt } from "./encrypt";
 
 class IndexedDBUtility {
 
@@ -23,17 +21,6 @@ class IndexedDBUtility {
                 const objectStore = transaction.objectStore(store);
 
                 data.forEach((value: any) => {
-
-                    if (ConfigOptions._encrypt) {
-                        if (typeof value === 'object') {
-                            for (const [prop, propValue] of Object.entries(value)) {
-                                value[prop] = encrypt(propValue as string);
-                            }
-                        } else {
-                            value = encrypt(value);
-                        }
-                    }
-
                     const request = objectStore.put(value);
                     request.onerror = (event) => {
                         console.error("Error adding data:", event);

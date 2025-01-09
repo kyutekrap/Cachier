@@ -1,7 +1,6 @@
 import { IndexedDBConfig } from "../types/IndexedDBConfig";
 import { StoreConfig } from "../types/StoreConfig";
 import { ConfigOptions } from "./ConfigOptions";
-import { encrypt } from "./encrypt";
 
 export class GlobalDB {
 
@@ -51,20 +50,14 @@ export class GlobalDB {
         });
     }
 
-    constructor(config: IndexedDBConfig, toEncrypt: boolean) {
+    constructor(config: IndexedDBConfig) {
         new Promise<void>((resolve, reject) => {
             if (typeof config.dbName === "string") {
                 const request = indexedDB.open(config.dbName, config.version);
 
                 request.onupgradeneeded = () => {
                     const db = request.result;
-
-                    const stores = toEncrypt ? (config.stores || []).map(s => {
-                        return {
-                            ...s,
-                            name: encrypt(s.name)
-                        }
-                    }) : (config.stores || []);
+                    const stores = config.stores || [];
             
                     stores.forEach((storeConfig: StoreConfig) => {
                         if (!db.objectStoreNames.contains(storeConfig.name)) {
@@ -81,7 +74,7 @@ export class GlobalDB {
                     });
 
                     for (let i = 0; i < db.objectStoreNames.length; i++) {
-                        const storeName = toEncrypt ? encrypt(db.objectStoreNames[i]) : db.objectStoreNames[i];
+                        const storeName = db.objectStoreNames[i];
                         if (!stores?.map(s => s.name)?.includes(storeName)) db.deleteObjectStore(storeName);
                     }
                 };
