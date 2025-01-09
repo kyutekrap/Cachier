@@ -43,8 +43,8 @@ export function finder(target: any, _propertyKey: string, descriptor: PropertyDe
                 let result = await originalMethod.apply(this, args);
                 if (!result) {
                     const db = new IndexedDBUtility();
-                    result = db.get(ConfigOptions._encrypt ? encrypt(target._name) : target._name, args?.[0] ?? "").then(response => {
-                        if (response) return ConfigOptions._encrypt ? decrypt(response) : response;
+                    result = db.get(target._name, args?.[0] ?? "").then(response => {
+                        if (response) return response;
                     });
                 }
                 return result;

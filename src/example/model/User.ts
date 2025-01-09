@@ -1,4 +1,4 @@
-import { CachierType, getter, setter, collector, finder, http } from 'cachier-api';
+import { CachierType, getter, setter, collector, finder, http } from "../../../api";
 
 export interface User {
     email: string;
@@ -11,7 +11,7 @@ export interface GlobalUserPayload {
 
 export class GlobalUser {
 
-    static _cachier: CachierType = "session";
+    static _cachier: CachierType = "local";
     static _name = "GlobalUser";
     static _data: User | undefined;
     static _apiKey = "GlobalUser";

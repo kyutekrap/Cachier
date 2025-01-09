@@ -3,7 +3,7 @@ import { IndexedDBConfig } from "../types/IndexedDBConfig";
 import { RestApiConfig } from "../types/RestApiConfig";
 
 export class Config extends ConfigOptions {
-    // encrypt?: boolean;
+    encrypt?: boolean;
     salt?: string;
     indexedDBConfig?: IndexedDBConfig;
     restApiConfig?: RestApiConfig;

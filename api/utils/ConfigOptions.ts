@@ -7,7 +7,7 @@ export class ConfigOptions {
     static _salt: string = "";
     static _baseUrl: string = "";
     static _apiKey: string = "";
-    static _method: "plain" | "jwt" = "plain";
+    static _method: "plain" | "jwt" | "odata" = "plain";
     static _defaultHeaders: Record<string, string> = {};
     static _secretKey: Constructor<any> | undefined;
     static _dbName: string = "";
@@ -16,7 +16,6 @@ export class ConfigOptions {
         ConfigOptions._encrypt = config.encrypt ?? false;
         ConfigOptions._salt = (config.salt ?? "").padEnd(32, '0');
         ConfigOptions._baseUrl = config.restApiConfig?.url ?? "";
-        ConfigOptions._apiKey = config.restApiConfig?.customHeader ?? "";
         ConfigOptions._method = config.restApiConfig?.method ?? "plain";
         ConfigOptions._defaultHeaders = config.restApiConfig?.defaultHeaders ?? {};
         ConfigOptions._secretKey = config.restApiConfig?.secretKey;

@@ -1,7 +1,5 @@
 import { CachierType } from "../types";
 import IndexedDBUtility from "../utils/IndexedDBUtility";
-import { ConfigOptions } from "../utils/ConfigOptions";
-import { encrypt } from "../utils/encrypt";
 
 export function adder(target: any, _propertyKey: string, descriptor: PropertyDescriptor): void {
     const originalMethod = descriptor.value;
@@ -10,7 +8,7 @@ export function adder(target: any, _propertyKey: string, descriptor: PropertyDes
         switch (cachier) {
             case "indexedDB":
                 const db = new IndexedDBUtility();
-                db.addData(ConfigOptions._encrypt ? encrypt(target._name) : target._name, args);
+                db.addData(target._name, args);
                 break;
             default:
                 break;

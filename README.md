@@ -19,3 +19,6 @@ Model based globals manager for modern javascript.
 * fetch
 * adder (Indexed DB only)
 * remover (Indexed DB only)
+
+#### Other Features:
+* encrypt (Supported for Session, Local Storage)

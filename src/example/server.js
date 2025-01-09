@@ -18,6 +18,10 @@ app.get('/api', (req, res) => {
     res.json({ email: 'test@email.com', phone: '123456789' });
 });
 
+app.get('/api/GlobalUser', (req, res) => {
+    res.json({ email: 'test@email.com', phone: '123456789' });
+});
+
 app.listen(PORT, () => {
     console.log("App is running on port " + PORT);
 });

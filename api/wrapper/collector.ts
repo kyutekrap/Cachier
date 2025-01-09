@@ -16,7 +16,7 @@ export function collector(target: any, _propertyKey: string, descriptor: Propert
                 break;
             case "indexedDB":
                 const db = new IndexedDBUtility();
-                db.clearStore(ConfigOptions._encrypt ? encrypt(target._name) : target._name);
+                db.clearStore(target._name);
                 break;
             default:
                 break;

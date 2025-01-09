@@ -24,15 +24,9 @@ export function setter(target: any, _propertyKey: string, descriptor: PropertyDe
                 break;
             case "indexedDB":
                 const db = new IndexedDBUtility();
-                if (ConfigOptions._encrypt) {
-                    db.clearStore(encrypt(target._name)).then(() => {
-                        db.addData(encrypt(target._name), args?.[0]);
-                    });
-                } else {
-                    db.clearStore(target._name).then(() => {
-                        db.addData(target._name, args?.[0]);
-                    });
-                }
+                db.clearStore(target._name).then(() => {
+                    db.addData(target._name, args?.[0]);
+                });
                 break;
             default:
                 break;
