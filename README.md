@@ -1,5 +1,5 @@
 # Cachier
-Model based globals manager for modern javascript.
+Model based globals manager for TypeScript.
 
 ***
 > Run with <br/>
